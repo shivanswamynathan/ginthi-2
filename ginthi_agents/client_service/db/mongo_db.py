@@ -13,10 +13,8 @@ MONGO_DB = os.getenv("MONGO_DB")
 async_mongo_client = AsyncIOMotorClient(MONGO_URI)
 async_database = async_mongo_client[MONGO_DB]
 
-# Sync MongoDB client (if needed)
-sync_mongo_client = MongoClient(MONGO_URI)
-sync_database = sync_mongo_client[MONGO_DB]
 
 # Get database
 def get_mongo_db():
+
     return async_database
