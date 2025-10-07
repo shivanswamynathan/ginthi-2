@@ -20,19 +20,3 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-@app.get("/db-status")
-async def check_db_status():
-    """Check database connection and collections"""
-    try:
-        collections = await db.list_collection_names()
-        return {
-            "status": "connected",
-            "database": db.name,
-            "collections": collections,
-            "total_collections": len(collections)
-        }
-    except Exception as e:
-        return {
-            "status": "error",
-            "error": str(e)
-        }
