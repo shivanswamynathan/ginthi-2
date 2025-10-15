@@ -39,6 +39,8 @@ class ClientSchema(Document):
     is_active: bool = Field(default=True, description="Whether this version is the active schema")
     description: Optional[str] = Field(None, description="Short description of schema purpose")
     fields: List[SchemaField] = Field(default_factory=list, description="Array of field definitions")
+    created_by: Optional[str] = Field(None, description="UUID of user who created this schema")
+    updated_by: Optional[str] = Field(None, description="UUID of user who last updated this schema")
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
