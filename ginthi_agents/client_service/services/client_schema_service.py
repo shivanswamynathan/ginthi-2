@@ -100,6 +100,8 @@ class ClientSchemaService:
                 is_active=schema_data.is_active,
                 description=schema_data.description,
                 fields=fields,
+                created_by=schema_data.created_by,
+                updated_by=schema_data.created_by,
                 created_at=datetime.now(timezone.utc),
                 updated_at=datetime.now(timezone.utc)
             )
@@ -125,6 +127,8 @@ class ClientSchemaService:
                     is_active=new_schema.is_active,
                     description=new_schema.description,
                     fields=new_schema.fields,
+                    created_by=new_schema.created_by,
+                    updated_by=new_schema.updated_by,
                     created_at=new_schema.created_at,
                     updated_at=new_schema.updated_at
                 ).model_dump(by_alias=True)
@@ -170,6 +174,8 @@ class ClientSchemaService:
                     is_active=schema.is_active,
                     description=schema.description,
                     fields=schema.fields,
+                    created_by=schema.created_by,
+                    updated_by=schema.updated_by,
                     created_at=schema.created_at,
                     updated_at=schema.updated_at
                 ).model_dump(by_alias=True)
@@ -360,6 +366,8 @@ class ClientSchemaService:
                     is_active=schema.is_active,
                     description=schema.description,
                     fields=schema.fields,
+                    created_by=schema.created_by,
+                    updated_by=schema.updated_by,
                     created_at=schema.created_at,
                     updated_at=schema.updated_at
                 ).model_dump(by_alias=True)
@@ -413,7 +421,8 @@ class ClientSchemaService:
                             await other.save()
                 
                 schema.is_active = schema_data.is_active
-            
+            if schema_data.updated_by:
+                schema.updated_by = schema_data.updated_by
             schema.updated_at = datetime.now(timezone.utc)
             await schema.save()
             
@@ -436,6 +445,8 @@ class ClientSchemaService:
                     is_active=schema.is_active,
                     description=schema.description,
                     fields=schema.fields,
+                    created_by=schema.created_by,
+                    updated_by=schema.updated_by,
                     created_at=schema.created_at,
                     updated_at=schema.updated_at
                 ).model_dump(by_alias=True)
@@ -502,6 +513,8 @@ class ClientSchemaService:
                     is_active=schema.is_active,
                     description=schema.description,
                     fields=schema.fields,
+                    created_by=schema.created_by,
+                    updated_by=schema.updated_by,
                     created_at=schema.created_at,
                     updated_at=schema.updated_at
                 ).model_dump(by_alias=True)
