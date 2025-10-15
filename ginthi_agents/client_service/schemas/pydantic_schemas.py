@@ -1042,6 +1042,10 @@ class ClientSchemaCreate(ClientSchemaBase):
         default=True,
         description="Whether this version should be active"
     )
+    created_by: Optional[str] = Field(
+        None,
+        description="UUID of user creating this schema"
+    )
 
 
 class ClientSchemaUpdate(BaseModel):
@@ -1060,6 +1064,10 @@ class ClientSchemaUpdate(BaseModel):
         None,
         description="Whether this version should be active"
     )
+    updated_by: Optional[str] = Field(
+        None,
+        description="UUID of user updating this schema"
+    )
 
 
 class ClientSchemaResponse(BaseModel):
@@ -1071,6 +1079,8 @@ class ClientSchemaResponse(BaseModel):
     is_active: bool = Field(..., description="Whether this is the active version")
     description: Optional[str] = Field(None, description="Schema description")
     fields: List[SchemaFieldResponse] = Field(..., description="Field definitions")
+    created_by: Optional[str] = Field(None, description="UUID of user who created this")
+    updated_by: Optional[str] = Field(None, description="UUID of user who last updated this")
     created_at: datetime = Field(..., description="Creation timestamp")
     updated_at: datetime = Field(..., description="Last update timestamp")
 
