@@ -1,6 +1,1 @@
-fastapi
-uvicorn
-selenium
-python-dotenv
-pydantic
-webdriver-manager
+
