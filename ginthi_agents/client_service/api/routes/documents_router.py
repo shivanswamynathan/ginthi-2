@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.post(
     "/documents/create",
-    response_model=List[APIResponse],
+    response_model=APIResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Create a document in dynamic collection",
     description="Creates a new document in a collection based on schema definition. "
@@ -20,7 +20,7 @@ router = APIRouter()
                 "The collection must have an active schema defined first."
 )
 async def create_document(
-    documents_data: List[DocumentCreate],
+    document_data: DocumentCreate,
     db: AsyncSession = Depends(get_database_session)
 ):
     """
@@ -35,20 +35,13 @@ async def create_document(
     Returns:
         APIResponse with created document details
     """
-    created_documents = []
-    
-    for document_data in documents_data:
-        result = await DocumentService.create(
-            client_id=document_data.client_id,
-            collection_name=document_data.collection_name,
-            data=document_data.data,
-            db=db,
-            created_by=document_data.created_by
-        )
-        created_documents.append(result)
-    
-    return created_documents
-
+    return await DocumentService.create(
+        client_id=document_data.client_id,
+        collection_name=document_data.collection_name,
+        data=document_data.data,
+        db=db,
+        created_by=document_data.created_by
+    )
 
 @router.get(
     "/documents/{client_id}/{collection_name}/{document_id}",
@@ -190,4 +183,5 @@ async def delete_document(
         collection_name=collection_name,
         document_id=document_id,
         db=db
+
     )
