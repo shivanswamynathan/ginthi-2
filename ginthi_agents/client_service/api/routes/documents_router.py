@@ -38,10 +38,11 @@ async def create_document(
     return await DocumentService.create(
         client_id=document_data.client_id,
         collection_name=document_data.collection_name,
-        data=document_data.data,
+        documents=document_data.data,
         db=db,
         created_by=document_data.created_by
     )
+
 
 @router.get(
     "/documents/{client_id}/{collection_name}/{document_id}",
@@ -183,5 +184,4 @@ async def delete_document(
         collection_name=collection_name,
         document_id=document_id,
         db=db
-
     )
