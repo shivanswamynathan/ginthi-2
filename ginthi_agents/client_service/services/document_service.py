@@ -128,7 +128,7 @@ class DocumentService:
     async def create(
         client_id: str,
         collection_name: str,
-        data: dict[str, Any],
+        documents: List[Dict[str, Any]],
         db: AsyncSession,
         created_by: Optional[str] = None
     ) -> APIResponse:
@@ -143,7 +143,8 @@ class DocumentService:
             schema = await DocumentService._get_active_schema(client_id, collection_name)
             
             # Validate document data against schema
-            await DocumentService._validate_document_data(data, schema)
+            for idx, data in enumerate(documents):
+                await DocumentService._validate_document_data(data, schema)
             
             # Convert SchemaField objects to dicts for the model factory
             fields_as_dicts = [
@@ -168,29 +169,36 @@ class DocumentService:
             )
             
             # Create document instance
-            doc_data = {
-                'client_id': client_id,
-                'created_by': created_by,
-                'updated_by': created_by,
-                **data
-            }
+            created_docs = []
+            for data in documents:
+                doc_data = {
+                    'client_id': client_id,
+                    'created_by': created_by,
+                    'updated_by': created_by,
+                    **data
+                }
             
-            document = model_class(**doc_data)
-            await document.insert()
             
-            logger.info(f"Created document in {collection_name}: {document.id}")
+                document = model_class(**doc_data)
+                await document.insert()
+
+                created_docs.append({
+                        "id": str(document.id),
+                        "collection": collection_name,
+                        "client_id": client_id,
+                        "data": doc_data,
+                        "created_at": document.created_at.isoformat(),
+                        "created_by": created_by
+                    })
+
+            
+            
+            logger.info(f"Created {len(created_docs)} documents in {collection_name}")
             
             return APIResponse(
                 success=True,
-                message=f"Document created successfully in {collection_name}",
-                data={
-                    "id": str(document.id),
-                    "collection": collection_name,
-                    "client_id": client_id,
-                    "data": data,
-                    "created_at": document.created_at.isoformat(),
-                    "created_by": created_by
-                }
+                message=f"Successfully created {len(created_docs)} documents in {collection_name}",
+                data=created_docs
             )
         
         except HTTPException:
