@@ -1105,9 +1105,10 @@ class DocumentCreate(BaseModel):
         description="Name of the collection (must match an existing schema_name)",
         examples=["purchase_order", "grn", "invoice"]
     )
-    data: Dict[str, Any] = Field(
+    data: List[Dict[str, Any]] = Field(
         ...,
-        description="Document data conforming to the schema definition"
+        min_length=1,
+        description="Array of document data. Each must match schema definition"
     )
     created_by: Optional[str] = Field(
         None,
@@ -1119,13 +1120,13 @@ class DocumentCreate(BaseModel):
             "example": {
                 "client_id": "184e06a1-319a-4a3b-9d2f-bb8ef879cbd1",
                 "collection_name": "purchase_order",
-                "data": {
+                "data": [{
                     "po_number": "PO-2025-001",
                     "vendor_id": "VEND001",
                     "total_amount": 15000.50,
                     "status": "Open",
                     "po_date": "2025-10-15"
-                },
+                }],
                 "created_by": "user-uuid-123"
             }
         }
