@@ -1,0 +1,17 @@
+# Requirements for the client_service
+
+## Core runtime / Web framework
+fastapi
+fastapi-mcp
+uvicorn
+asyncpg
+sqlalchemy
+psycopg2-binary
+python-dotenv
+pydantic
+pydantic[email]
+python-json-logger
+requests
+beanie
+motor
+python-jose==3.3.0  
