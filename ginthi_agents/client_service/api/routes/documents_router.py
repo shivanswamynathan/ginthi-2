@@ -36,6 +36,7 @@ async def create_document(
     """
     return await DocumentService.create(
         client_id=document_data.client_id,
+        vendor_id=document_data.vendor_id,
         collection_name=document_data.collection_name,
         data=document_data.data,
         db=db,
