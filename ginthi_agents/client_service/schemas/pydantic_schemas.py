@@ -1099,6 +1099,11 @@ class DocumentCreate(BaseModel):
         description="UUID of the client (as string)",
         examples=["184e06a1-319a-4a3b-9d2f-bb8ef879cbd1"]
     )
+    vendor_id: str = Field(
+        ...,
+        description="UUID of vendor (required)",
+        examples=["123e4567-e89b-12d3-a456-426614174000"]
+    )
     collection_name: str = Field(
         ...,
         min_length=1,
@@ -1119,10 +1124,10 @@ class DocumentCreate(BaseModel):
         json_schema_extra = {
             "example": {
                 "client_id": "184e06a1-319a-4a3b-9d2f-bb8ef879cbd1",
+                "vendor_id": "123e4567-e89b-12d3-a456-426614174000",
                 "collection_name": "purchase_order",
                 "data": {
                     "po_number": "PO-2025-001",
-                    "vendor_id": "VEND001",
                     "total_amount": 15000.50,
                     "status": "Open",
                     "po_date": "2025-10-15"
