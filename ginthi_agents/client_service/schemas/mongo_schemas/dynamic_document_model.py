@@ -16,6 +16,7 @@ class BaseDynamicDocument(Document):
     Contains common fields that every dynamic document should have.
     """
     client_id: str = Field(..., description="UUID of the client as string")
+    vendor_id: str = Field(..., description="UUID of vendor (required)")
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     created_by: Optional[str] = Field(None, description="UUID of user who created this")
@@ -30,6 +31,16 @@ class BaseDynamicDocument(Document):
             return v
         except (ValueError, AttributeError):
             raise ValueError(f"client_id must be a valid UUID string, got: {v}")
+    
+    @field_validator('vendor_id')
+    @classmethod
+    def validate_vendor_id(cls, v):
+        """Validate that vendor_id is a valid UUID string"""
+        try:
+            UUID(v)
+            return v
+        except (ValueError, AttributeError):
+            raise ValueError(f"vendor_id must be a valid UUID string, got: {v}")
     
 
 
