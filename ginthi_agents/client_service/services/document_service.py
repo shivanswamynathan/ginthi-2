@@ -12,6 +12,7 @@ from client_service.schemas.mongo_schemas.dynamic_document_model import (
     BaseDynamicDocument
 )
 from client_service.schemas.client_db.client_models import Clients
+from client_service.schemas.client_db.vendor_models import VendorMaster
 from client_service.api.constants.status_codes import StatusCode
 from client_service.schemas.base_response import APIResponse
 from uuid import UUID
@@ -42,6 +43,29 @@ class DocumentService:
             raise HTTPException(
                 status_code=StatusCode.NOT_FOUND,
                 detail=f"Client with ID {client_id} not found"
+            )
+        return True
+    
+    @staticmethod
+    async def _validate_vendor(vendor_id: str, db: AsyncSession) -> bool:
+        """Validate that vendor exists in PostgreSQL"""
+        try:
+            UUID(vendor_id)
+        except ValueError:
+            raise HTTPException(
+                status_code=StatusCode.BAD_REQUEST,
+                detail=f"Invalid vendor_id format: {vendor_id}"
+            )
+        
+        result = await db.execute(
+            select(VendorMaster).where(VendorMaster.vendor_id == vendor_id)
+        )
+        vendor = result.scalar_one_or_none()
+        
+        if not vendor:
+            raise HTTPException(
+                status_code=StatusCode.NOT_FOUND,
+                detail=f"Vendor with ID {vendor_id} not found"
             )
         return True
     
@@ -127,6 +151,7 @@ class DocumentService:
     @staticmethod
     async def create(
         client_id: str,
+        vendor_id: str,
         collection_name: str,
         data: dict[str, Any],
         db: AsyncSession,
@@ -138,6 +163,8 @@ class DocumentService:
         try:
             # Validate client exists
             await DocumentService._validate_client(client_id, db)
+
+            await DocumentService._validate_vendor(vendor_id, db)
             
             # Get active schema
             schema = await DocumentService._get_active_schema(client_id, collection_name)
@@ -170,6 +197,7 @@ class DocumentService:
             # Create document instance
             doc_data = {
                 'client_id': client_id,
+                'vendor_id': vendor_id,
                 'created_by': created_by,
                 'updated_by': created_by,
                 **data
